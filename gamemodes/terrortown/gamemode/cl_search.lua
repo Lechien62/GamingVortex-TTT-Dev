@@ -166,7 +166,7 @@ function PreprocSearch(raw)
          search[t].p = 15
       elseif t == "dtime" then
          if d != 0 then
-            local ftime = util.SimpleTime(d, "%02i:%02i")
+            local ftime = util.FormatTime(d, "%02i:%02i")
             search[t].text = PT("search_time", {time = ftime})
 
             search[t].text_icon = ftime
@@ -175,7 +175,7 @@ function PreprocSearch(raw)
          end
       elseif t == "stime" then
          if d > 0 then
-            local ftime = util.SimpleTime(d, "%02i:%02i")
+            local ftime = util.FormatTime(d, "%02i:%02i")
             search[t].text = PT("search_dna", {time = ftime})
 
             search[t].text_icon = ftime
@@ -246,11 +246,6 @@ local function SearchInfoController(search, dactive, dtext)
                 ErrorNoHalt("Search: data not found", t, data)
                 return
              end
-
-             -- If wrapping is on, the Label's SizeToContentsY misbehaves for
-             -- text that does not need wrapping. I long ago stopped wondering
-             -- "why" when it comes to VGUI. Apply hack, move on.
-             dtext:GetLabel():SetWrap(#data.text > 50)
 
              dtext:SetText(data.text)
              dactive:SetImage(data.img)
@@ -332,6 +327,9 @@ local function ShowSearchScreen(search_raw)
    dtext:SetSize(descw - 120, desch - m*2)
    dtext:MoveRightOf(dactive, m*2)
    dtext:AlignTop(m)
+
+   local dtextlabel = dtext:GetLabel()
+   dtextlabel:SetWrap(true)
    dtext:SetText("...")
 
    -- buttons

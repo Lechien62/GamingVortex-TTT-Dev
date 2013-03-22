@@ -7,11 +7,7 @@
 local table = table
 local pairs = pairs
 
-local is_dmg = function(dmg_t, bit)
-                  -- deal with large-number workaround for TableToJSON by
-                  -- parsing back to number here
-                  return util.BitSet(tonumber(dmg_t), bit)
-               end
+local is_dmg = util.BitSet
 
 -- so much text here I'm using shorter names than usual
 local T = LANG.GetTranslation

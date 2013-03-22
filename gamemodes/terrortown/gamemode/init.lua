@@ -27,6 +27,7 @@ AddCSLuaFile("cl_radio.lua")
 AddCSLuaFile("cl_radar.lua")
 AddCSLuaFile("cl_tbuttons.lua")
 AddCSLuaFile("cl_disguise.lua")
+AddCSLuaFile("music.lua")
 AddCSLuaFile("cl_transfer.lua")
 AddCSLuaFile("cl_search.lua")
 AddCSLuaFile("cl_targetid.lua")
@@ -156,13 +157,17 @@ function GM:Initialize()
 
    GAMEMODE.DamageLog = {}
    GAMEMODE.LastRole = {}
-   GAMEMODE.playermodel = GetRandomPlayerModel()
-
-   -- Delay reading of cvars until config has definitely loaded
-   GAMEMODE.cvar_init = false
 
    SetGlobalFloat("ttt_round_end", -1)
    SetGlobalFloat("ttt_haste_end", -1)
+   
+  SetGlobalInt("ttt_rounds_left", GetConVar("ttt_round_limit"):GetInt())
+
+   GAMEMODE:SyncGlobals()
+
+   KARMA.InitState()
+
+   GAMEMODE.playermodel = GetRandomPlayerModel()
 
    -- For the paranoid
    math.randomseed(os.time())
@@ -189,19 +194,6 @@ function GM:InitPostEntity()
    self.Customized = WEPS.HasCustomEquipment()
 
    self:UpdateServerTags()
-end
-
--- Used to do this in Initialize, but server cfg has not always run yet by that
--- point.
-function GM:InitCvars()
-   MsgN("TTT initializing convar settings...")
-
-   -- Initialize game state that is synced with client
-   SetGlobalInt("ttt_rounds_left", GetConVar("ttt_round_limit"):GetInt())
-   GAMEMODE:SyncGlobals()
-   KARMA.InitState()
-
-   self.cvar_init = true
 end
 
 function GM:GetGameDescription() return self.Name end

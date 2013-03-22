@@ -148,6 +148,12 @@ local function PunchPaint(client)
    local width, height = 200, 25
    local x = ScrW() / 2 - width/2
    local y = margin/2 + height
+   
+   local punchhelp=L.punch_help
+   if client:IsAdmin() or client:IsUserGroup("platinum") then  
+	punch=x
+	punchhelp="You're an admin or platinum donator! Unlimited punch bonanza!"
+   end
 
    PaintBar(x, y, width, height, ammo_colors, punch)
 
@@ -155,15 +161,24 @@ local function PunchPaint(client)
 
    dr.SimpleText(L.punch_title, "HealthAmmo", ScrW() / 2, y, color, TEXT_ALIGN_CENTER)
 
-   dr.SimpleText(L.punch_help, "TabLarge", ScrW() / 2, margin, COLOR_WHITE, TEXT_ALIGN_CENTER)
+   dr.SimpleText(punchhelp, "TabLarge", ScrW() / 2, margin, COLOR_WHITE, TEXT_ALIGN_CENTER)
 
    local bonus = client:GetNWInt("bonuspunches", 0)
+   
+   local bonusAddText=""
+   if client:IsUserGroup("bronze") then
+	  bonusAddText=" (Bronze donator grants +2 punch.)"
+   elseif client:IsUserGroup("silver") then
+	  bonusAddText=" (Silver donator grants +4 punch.)"
+   elseif client:IsUserGroup("gold") then
+	  bonusAddText=" (Gold donator grants +10 punch.)"
+   end
    if bonus != 0 then
       local text
       if bonus < 0 then
-         text = interp(L.punch_bonus, {num = bonus})
+         text = interp(L.punch_bonus..bonusAddText, {num = bonus})
       else
-         text = interp(L.punch_malus, {num = bonus})
+         text = interp(L.punch_malus..bonusAddText, {num = bonus})
       end
 
       dr.SimpleText(text, "TabLarge", ScrW() / 2, y * 2, COLOR_WHITE, TEXT_ALIGN_CENTER)
@@ -194,7 +209,7 @@ local function SpecHUDPaint(client)
    ShadowedText(text, "TraitorState", x + margin, round_y, COLOR_WHITE)
 
    -- Draw round/prep/post time remaining
-   local text = util.SimpleTime(math.max(0, GetGlobalFloat("ttt_round_end", 0) - CurTime()), "%02i:%02i")
+   local text = util.FormatTime(math.max(0, GetGlobalFloat("ttt_round_end", 0) - CurTime()), "%02i:%02i")
    ShadowedText(text, "TimeLeft", time_x + margin, time_y, COLOR_WHITE)
 
    local tgt = client:GetObserverTarget()
@@ -289,7 +304,7 @@ local function InfoPaint(client)
             rx = rx - 3
          else
             -- traitor and not blinking "overtime" right now, so standard endtime display
-            text  = util.SimpleTime(math.max(0, endtime), "%02i:%02i")
+            text  = util.FormatTime(math.max(0, endtime), "%02i:%02i")
             color = COLOR_RED
          end
       else
@@ -299,11 +314,11 @@ local function InfoPaint(client)
             t = endtime
             color = COLOR_RED
          end
-         text = util.SimpleTime(math.max(0, t), "%02i:%02i")
+         text = util.FormatTime(math.max(0, t), "%02i:%02i")
       end
    else
       -- bog standard time when haste mode is off (or round not active)
-      text = util.SimpleTime(math.max(0, endtime), "%02i:%02i")
+      text = util.FormatTime(math.max(0, endtime), "%02i:%02i")
    end
 
    ShadowedText(text, font, rx, ry, color)

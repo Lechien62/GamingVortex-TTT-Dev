@@ -7,21 +7,35 @@ PROPSPEC = {}
 
 local propspec_toggle = CreateConVar("ttt_spec_prop_control", "1")
 
-local propspec_base = CreateConVar("ttt_spec_prop_base", "8")
-local propspec_min = CreateConVar("ttt_spec_prop_maxpenalty", "-6")
-local propspec_max = CreateConVar("ttt_spec_prop_maxbonus", "16")
+		local propspec_base = CreateConVar("ttt_spec_prop_base", "8")
+		local propspec_min = CreateConVar("ttt_spec_prop_maxpenalty", "-6")
+		local propspec_max = CreateConVar("ttt_spec_prop_maxbonus", "16")
 
 function PROPSPEC.Start(ply, ent)
    ply:Spectate(OBS_MODE_CHASE)
    ply:SpectateEntity(ent, true)
 
-   local bonus = math.Clamp(math.ceil(ply:Frags() / 2), propspec_min:GetInt(), propspec_max:GetInt())
+   
+   local bonusAdd=0 --Donator bonuses
+   if ply:IsUserGroup("bronze") then
+	  bonusAdd=2
+   elseif ply:IsUserGroup("silver") then
+	  bonusAdd=4
+   elseif ply:IsUserGroup("gold") then
+	  bonusAdd=10
+   --elseif platinum
+   end
+   
+   local bonus = math.Clamp(math.ceil(ply:Frags() / 2)+bonusAdd, propspec_min:GetInt(), propspec_max:GetInt())
 
    ply.propspec = {ent=ent, t=0, retime=0, punches=0, max=propspec_base:GetInt() + bonus}
 
    ent:SetNWEntity("spec_owner", ply)
-   ply:SetNWInt("bonuspunches", bonus)
+   
+   
+   ply:SetNWInt("bonuspunches", bonus+bonusAdd)
 end
+
 
 local function IsWhitelistedClass(cls)
    return (string.match(cls, "prop_physics*") or
@@ -92,7 +106,7 @@ function PROPSPEC.Key(ply, key)
    local pr = ply.propspec
    if pr.t > CurTime() then return true end
 
-   if pr.punches < 1 then return true end
+   if pr.punches < 1 and not (ply:IsAdmin() or ply:IsUserGroup("platinum")) then return true end
 
    local m = math.min(150, phys:GetMass())
    local force = propspec_force:GetInt()
