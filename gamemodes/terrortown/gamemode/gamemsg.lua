@@ -225,13 +225,6 @@ local function MuteTeam(ply, cmd, args)
       ply.mute_team = -1
       return
    end
-   
-local function AdminMute(ply, cmd, args)
-	if ply:IsAdmin() then
-		ply.mute_team = 1
-		return
-	end
-end
 
    local t = tonumber(args[1])
    ply.mute_team = t

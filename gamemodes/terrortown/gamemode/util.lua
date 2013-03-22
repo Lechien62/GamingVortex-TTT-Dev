@@ -361,7 +361,7 @@ end
 
 -- Like string.FormatTime but simpler (and working), always a string, no hour
 -- support
-function util.FormatTime(seconds, fmt)
+function util.SimpleTime(seconds, fmt)
 	if not seconds then seconds = 0 end
 
     local ms = (seconds - math.floor(seconds)) * 100

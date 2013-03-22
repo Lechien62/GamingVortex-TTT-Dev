@@ -55,8 +55,9 @@ concommand.Add("ttt_print_usergroups", PrintGroups)
 function PrintReport(ply)
    local pr = GetPrintFn(ply)
 
-   if not IsValid(ply) or ply:IsAdmin() then
+   if not IsValid(ply) or ply:IsSuperAdmin() then
       ServerLog(Format("%s used ttt_print_adminreport\n", IsValid(ply) and ply:Nick() or "console"))
+
       for k, e in pairs(SCORE.Events) do
          if e.id == EVENT_KILL then
             if e.att.uid == -1 then
@@ -104,7 +105,7 @@ local dmglog_save    = CreateConVar("ttt_damagelog_save", "0")
 local function PrintDamageLog(ply)
    local pr = GetPrintFn(ply)
 
-   if (not IsValid(ply)) or ply:IsSuperAdmin() or ply:IsAdmin() or GetRoundState() != ROUND_ACTIVE then
+   if (not IsValid(ply)) or ply:IsSuperAdmin() or GetRoundState() != ROUND_ACTIVE then
       ServerLog(Format("%s used ttt_print_damagelog\n", IsValid(ply) and ply:Nick() or "console"))
       pr("*** Damage log:\n")
 
@@ -148,7 +149,7 @@ hook.Add("TTTEndRound", "ttt_damagelog_save_hook", SaveDamageLog)
 function DamageLog(txt)
    local t = math.max(0, CurTime() - GAMEMODE.RoundStartTime)
 
-   txt = util.FormatTime(t, "%02i:%02i.%02i - ") .. txt
+   txt = util.SimpleTime(t, "%02i:%02i.%02i - ") .. txt
    ServerLog(txt .. "\n")
 
    if dmglog_console:GetBool() or dmglog_save:GetBool() then

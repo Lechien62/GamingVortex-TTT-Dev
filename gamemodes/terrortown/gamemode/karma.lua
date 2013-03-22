@@ -330,6 +330,9 @@ end
 local reason = "Karma too low"
 function KARMA.CheckAutoKick(ply)
    if ply:GetBaseKarma() <= config.kicklevel:GetInt() then
+      if hook.Call("TTTKarmaLow", GAMEMODE, ply) == false then
+         return
+      end
       ServerLog(ply:Nick() .. " autokicked/banned for low karma.\n")
 
       -- flag player as autokicked so we don't perform the normal player
@@ -342,9 +345,9 @@ function KARMA.CheckAutoKick(ply)
          KARMA.RememberedPlayers[ply:UniqueID()] = k
       end
 
-      if config.autoban:GetBool() and not ply:IsSuperAdmin() then
+      if config.autoban:GetBool() then
          ply:KickBan(config.bantime:GetInt(), reason)
-      elseif not ply:IsSuperAdmin() then
+      else
          ply:Kick(reason)
       end
    end

@@ -88,7 +88,7 @@ local function DrawTarget(tgt, size, offset, no_shrink)
 
       if tgt.t then
          -- Show time
-         text = util.FormatTime(tgt.t - CurTime(), "%02i:%02i")
+         text = util.SimpleTime(tgt.t - CurTime(), "%02i:%02i")
          w, h = surface.GetTextSize(text)
 
          surface.SetTextPos(scrpos.x - w / 2, scrpos.y + sz / 2)
@@ -110,7 +110,7 @@ local sample_scan = surface.GetTextureID("VGUI/ttt/sample_scan")
 local det_beacon  = surface.GetTextureID("VGUI/ttt/det_beacon")
 
 local GetPTranslation = LANG.GetParamTranslation
-local FormatTime = util.FormatTime
+local FormatTime = util.SimpleTime
 
 local near_cursor_dist = 180
 

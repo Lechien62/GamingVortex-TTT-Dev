@@ -37,7 +37,7 @@ function ShowC4Config(bomb)
 
    local dclock = vgui.Create("DLabel", dformtime)
    dclock:SetFont("TimeLeft")
-   dclock:SetText(util.FormatTime(starttime, "%02i:%02i"))
+   dclock:SetText(util.SimpleTime(starttime, "%02i:%02i"))
    dclock:SizeToContents()
    dclock:SetPos(m*2, m*2)
 
@@ -59,7 +59,7 @@ function ShowC4Config(bomb)
 
    dtime.OnValueChanged = function(self, val)
                              if not (IsValid(dclock) and IsValid(dwires)) then return end
-                             dclock:SetText(util.FormatTime(val, "%02i:%02i"))
+                             dclock:SetText(util.SimpleTime(val, "%02i:%02i"))
 
                              dwires:Update(val)
                           end
@@ -337,7 +337,7 @@ function ShowC4Disarm(bomb)
                      if t then
                         local r = t - CurTime()
                         if r > 0 then
-                           s:SetText(util.FormatTime(r, "%02i:%02i:%02i"))
+                           s:SetText(util.SimpleTime(r, "%02i:%02i:%02i"))
                         end
                      end
                   end

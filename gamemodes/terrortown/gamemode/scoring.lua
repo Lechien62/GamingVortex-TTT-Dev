@@ -31,7 +31,8 @@ local function CopyDmg(dmg)
    -- t = type, a = amount, g = gun, h = headshot
    local d = {}
 
-   d.t = dmg:GetDamageType()
+   -- util.TableToJSON doesn't handle large integers properly
+   d.t = tostring(dmg:GetDamageType())
    d.a = dmg:GetDamage()
    d.h = false
 
